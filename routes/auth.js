@@ -10,6 +10,7 @@ const {
     loginUser,
     renewToken,
 } = require('../features/authAppService');
+const { jwtValidator } = require('../middlewares/jwtValidator');
 
 const router = express.Router();
 
@@ -26,14 +27,15 @@ router.post(
 router.post(
     '/',
     [
-        check('name', 'The name is required.').not().isEmpty(),
         check('email', 'The email you entered is invalid.').isEmail(),
         check('password', 'The password is required.').not().isEmpty(),
         fieldsValidator
     ],
-    loginUser)
+    loginUser);
 
-router.get('/renew-token', renewToken);
+router.get('/renew-token', 
+    jwtValidator,
+    renewToken);
 
 
 module.exports = router;
