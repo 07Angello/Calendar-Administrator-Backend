@@ -39,12 +39,38 @@ const createUser = async(req, res = response) => {
 
 // POST: api/auth/
 const loginUser = async (req, res = response) => {
-    const userReq = req.body;
+    const { email, password } = req.body;
 
-    return res.json({
-        Message: 'login',
-        Data: userReq
-    });
+    try {
+        const existingUser = await User.findOne({ email: email });
+        if ( !existingUser ) {
+            return res.status(400).json({
+                Message: 'Either the e-mail or the password is invalid.',
+                Data: null
+            });
+        }
+
+        // comparing password
+        const validatedPassword = bcrypt.compareSync( password, existingUser.password );
+        if ( !validatedPassword ) {
+            return res.status(400).json({
+                Message: 'The password is incorrect.',
+                Data: null
+            });
+        }
+
+        existingUser.password = '*******';
+        return res.status(201).json({
+            Message: '',
+            Data: existingUser
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            Message: 'The login could not be processed.',
+            Data: null
+        });
+    }
 }
 
 // GET: api/auth/renew/
