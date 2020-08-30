@@ -1,6 +1,7 @@
 const { response } = require('express');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const { generateJWT } = require('../helpers/jwt');
 
 // POST: api/auth/register/
 const createUser = async(req, res = response) => {
@@ -23,10 +24,14 @@ const createUser = async(req, res = response) => {
 
         await newUser.save();
 
+        // JWT generated
+        const generatedToken = await generateJWT( newUser.id, newUser.name );
+
         newUser.password = '*******';
         return res.status(201).json({
             Message: '',
-            Data: newUser
+            Data: newUser,
+            Token: generatedToken
         });
     } catch (error) {
         console.log(error);
@@ -59,10 +64,13 @@ const loginUser = async (req, res = response) => {
             });
         }
 
+        const generatedToken = await generateJWT( existingUser.id, existingUser.name );
+
         existingUser.password = '*******';
         return res.status(201).json({
             Message: '',
-            Data: existingUser
+            Data: existingUser,
+            Token: generatedToken
         });
     } catch (error) {
         console.log(error);
@@ -75,11 +83,14 @@ const loginUser = async (req, res = response) => {
 
 // GET: api/auth/renew/
 const renewToken = async(req, res = response) => {
-    const userReq = req.body;
+    const { uid, name } = req
+
+    const generatedToken = await generatedToken( uid, name );
 
     return res.json({
-        Message: 'renew',
-        Data: userReq
+        Message: '',
+        Data: generatedToken,
+        Token: generatedToken
     });
 }
 
