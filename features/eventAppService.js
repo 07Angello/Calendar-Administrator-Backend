@@ -2,7 +2,7 @@ const { response } = require('express');
 
 // POST: api/event/
 const createEvent = async(req, res = response) => {
-    res.json({
+    return res.json({
         Message: 'Create event',
         Data: null
     });
@@ -10,7 +10,7 @@ const createEvent = async(req, res = response) => {
 
 // GET: api/event/:id
 const getEvent = (req, res = response) => {
-    res.json({
+    return res.json({
         Message: 'Get event',
         Data: null
     });
@@ -18,7 +18,7 @@ const getEvent = (req, res = response) => {
 
 // UPDATE: api/event/:id
 const updateEvent = async(req, res) => {
-    res.json({
+    return res.json({
         Message: 'Update Event',
         Data: null
     });
@@ -26,7 +26,7 @@ const updateEvent = async(req, res) => {
 
 // DELETE: api/event/:id
 const deleteEvent = async(req, res) => {
-    res.json({
+    return res.json({
         Message: 'Delete Event',
         Data: null
     });

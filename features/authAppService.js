@@ -2,25 +2,31 @@ const { response } = require('express');
 
 // POST: api/auth/register/
 const createUser = async(req, res = response) => {
-    res.json({
-        Message: 'Register',
-        Data: null
+    const userReq = req.body;
+
+    return res.status(201).json({
+        Message: 'createUser',
+        Data: userReq
     });
 }
 
-// GET: api/auth/login
+// POST: api/auth/
 const loginUser = async (req, res = response) => {
-    res.json({
+    const userReq = req.body;
+
+    return res.json({
         Message: 'login',
-        Data: null
+        Data: userReq
     });
 }
 
 // GET: api/auth/renew/
 const renewToken = async(req, res = response) => {
-    res.json({
+    const userReq = req.body;
+
+    return res.json({
         Message: 'renew',
-        Data: null
+        Data: userReq
     });
 }
 
