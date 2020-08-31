@@ -15,7 +15,7 @@ app.use( express.json() );
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/event', require('./routes/event'));
+app.use('/api/events', require('./routes/events'));
 
 
 app.listen( process.env.PORT, () => {
