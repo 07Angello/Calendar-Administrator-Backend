@@ -26,6 +26,27 @@ const createEvent = async( req, res = response ) => {
 
 // GET: api/events/:id
 const getEvent = async( req, res = response ) => {
+    const idEvent = req.params.id;
+
+    try {
+        const consultedEvent = await Event.findById( idEvent );
+        if ( !consultedEvent ) {
+            return res.status(404).json({
+                Message: 'This event does not exist.',
+                Data: null
+            });
+        }
+
+        return res.status(201).json({
+            Message: '',
+            Data: consultedEvent
+        });
+    } catch (error) {
+        return res.status(500).json({
+            Message: 'The event could not be consulted.',
+            Data: null
+        });
+    }
     return res.status(201).json({
         Message: 'Get event',
         Data: null
@@ -33,21 +54,44 @@ const getEvent = async( req, res = response ) => {
 }
 
 // GET: api/events/
-const getEvents = async( req, res = response ) => {
-    const events = await Event.find()
-                                .populate('user', 'name');
+const getPaginatedEvents = async( req, res = response ) => {
+    const { pageNumber, searchedEvent } = req.body;
 
-    if ( events.length === 0 ) {
-        return res.status(201).json({
-            Message: 'There are no events registered.',
-            Data: null
-        });
-    }
+    const resultsPerPage = 10;
 
-    return res.status(201).json({
-        Message: '',
-        Data: events
-    });
+    const pgNumber = pageNumber == 0 ? 0 : Number(pageNumber);
+    const srchEvent = searchedEvent == null || searchedEvent == '' ? '' : searchedEvent;
+
+    const filterLike = new RegExp(srchEvent, 'i');
+    const from = resultsPerPage * pgNumber;
+
+
+    await Event.find({ "title": filterLike })
+            .skip( from )
+            .limit( resultsPerPage )
+            .sort( 'start' )
+            .populate( 'user', 'name' )
+            .exec(( err, events ) => {
+                if ( err ) {
+                    return res.status(400).json({
+                        Data: null,
+                        Message: 'Could not found events.'
+                    });
+                }
+
+                if ( !events ) {
+                    return res.status(404).json({
+                        Message: 'There are no registered events.',
+                        Data: null
+                    });
+                }
+
+                return res.status(201).json({
+                    Message: '',
+                    Data: events
+                });
+            });
+
 }
 
 // UPDATE: api/events/:id
@@ -130,7 +174,7 @@ const deleteEvent = async(req, res) => {
 module.exports = {
     createEvent,
     getEvent,
-    getEvents,
+    getPaginatedEvents,
     updateEvent,
     deleteEvent,
 }
