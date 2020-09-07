@@ -8,7 +8,7 @@ const { fieldsValidator } = require('../middlewares/fieldsValidator');
 const {
     createEvent,
     getEvent,
-    getPaginatedEvents,
+    getAllEvents,
     updateEvent,
     deleteEvent,
 } = require('../features/eventAppService');
@@ -31,7 +31,7 @@ router.get('/:id',
     getEvent);
 
 router.get('/',
-    getPaginatedEvents);
+    getAllEvents);
 
 router.put('/:id',
     [

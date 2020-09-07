@@ -47,10 +47,7 @@ const getEvent = async( req, res = response ) => {
             Data: null
         });
     }
-    return res.status(201).json({
-        Message: 'Get event',
-        Data: null
-    });
+
 }
 
 // GET: api/events/
@@ -91,6 +88,33 @@ const getPaginatedEvents = async( req, res = response ) => {
                     Data: events
                 });
             });
+
+}
+
+// GET: api/events/all
+const getAllEvents = async(req, res = response) => {
+
+    try {
+        const events = await Event.find()
+        .populate('user', 'name');
+
+        if ( !events ) {
+            return res.status(404).json({
+                Message: 'There are no registered events.',
+                Data: null
+            });
+        }
+
+        return res.status(201).json({
+            Message: '',
+            Data: events
+        });
+    } catch (error) {
+        return res.status(500).json({
+            Message: 'Could not get any events.',
+            Data: null
+        });
+    }
 
 }
 
@@ -174,6 +198,7 @@ const deleteEvent = async(req, res) => {
 module.exports = {
     createEvent,
     getEvent,
+    getAllEvents,
     getPaginatedEvents,
     updateEvent,
     deleteEvent,
