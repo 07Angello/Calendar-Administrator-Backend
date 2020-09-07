@@ -89,7 +89,7 @@ const renewToken = async(req, res = response) => {
 
     return res.json({
         Message: '',
-        Data: generatedToken,
+        Data: { _id:uid, name },
         Token: generatedToken
     });
 }
