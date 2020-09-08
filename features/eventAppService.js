@@ -174,7 +174,7 @@ const deleteEvent = async(req, res) => {
         }
 
         if ( consultedEvent.user.toString() !== uid ) {
-            return res.status().json({
+            return res.status(401).json({
                 Message: 'You do not have permission to DELETE this event.',
                 Data: null
             });
